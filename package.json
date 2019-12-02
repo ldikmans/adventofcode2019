@@ -1,8 +1,13 @@
 {
     "name": "Fuel",
     "version": "1.0.0",
-    "keywords": ["util", "functional", "server", "client", "browser"],
     "author": "ldikmans",
     "contributors": [],
-    "dependencies": {}
+    "scripts": {
+        "test": "mocha"
+    },
+    "dependencies": {},
+    "devDependencies": {
+        "mocha": "^6.2.2"
+    }
 }

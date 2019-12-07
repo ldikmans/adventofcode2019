@@ -3,15 +3,15 @@ const CLOCKWISE = 1;
 const COUNTERCLOCKWISE = 2;
 
 exports.onSegment = function (p, q, r) {
-    if (q.x <= Math.max(p.x, r.y) && q.x >= Math.min(p.x, r.x) &&
-            q.y <= Math.max(p.y, r.y) && q.y >= Math.min(p.y, r.y)) {
-        return true;
+    if (q.x <= Math.max(p.x, r.x) && q.x >= Math.min(p.x, r.x) &&
+        q.y <= Math.max(p.y, r.y) && q.y >= Math.min(p.y, r.y)) {
+            return true;
     } else {
         return false;
     }
 };
 
-function orientation(p, q, r) {
+exports.orientation = function(p, q, r) {
     // See https://www.geeksforgeeks.org/orientation-3-ordered-points/ 
     // for details of below formula. 
     let value = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
@@ -29,10 +29,10 @@ function orientation(p, q, r) {
 exports.doIntersect = function (p1, q1, p2, q2) {
 // Find the four orientations needed for general and 
 // special cases 
-    let o1 = orientation(p1, q1, p2);
-    let o2 = orientation(p1, q1, q2);
-    let o3 = orientation(p2, q2, p1);
-    let o4 = orientation(p2, q2, q1);
+    let o1 = this.orientation(p1, q1, p2);
+    let o2 = this.orientation(p1, q1, q2);
+    let o3 = this.orientation(p2, q2, p1);
+    let o4 = this.orientation(p2, q2, q1);
     let onSegment = false;
     // General case 
     if (o1 !== o2 && o3 !== o4) {

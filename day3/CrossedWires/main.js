@@ -1,80 +1,87 @@
-self = this;
+const linesegments = require('./lib/linesegments');
 
-exports.calculateDistance = function(wire1, wire2){
-    let coordinates1 = calculateWireCoordinates(wire1);
-    let coordinates2 = calculateWireCoordinates(wire2);
-    let crossPoints = compare(coordinates1, coordinates2);
+exports.calculateDistance = function (wire1, wire2) {
+    let wirelines1 = calculateWireLines(wire1);
+    //let sortedwires1 = sortWirelines(wirelines1);
+    let wirelines2 = calculateWireLines(wire2);
+    //let sortedwires2 = sortWirelines(wirelines2);
+    let crossPoints = compare(wirelines1, wirelines2);
     return calculateSmallesDistance(crossPoints);
 };
 
-calculateWireCoordinates = function(wire){
-    let coordinateArray = [];
+function calculateWireLines(wire) {
+    let lines = [];
     let cursorX = 0;
     let cursorY = 0;
+    
     let wireArray = wire.split(',');
-    for (let i = 0; i<wireArray.length; i++){
-        let direction = wireArray[i].substring(0,1);
-        value = Number(wireArray[i].substring(1));
-        switch (direction){
-            case 'R': 
-                for(let j=0; j<value; j++){
-                   cursorX = cursorX+1;
-                   coordinateArray.push(cursorX + ';' + cursorY); 
-                };
+    for (let i = 0; i < wireArray.length; i++) {
+        let direction = wireArray[i].substring(0, 1);
+        let value = Number(wireArray[i].substring(1));
+        let line = {};
+        line.start = {
+            x: cursorX,
+            y: cursorY
+        };
+        line.end = {};
+        switch (direction) {
+            case 'R':
+                cursorX = cursorX + value;
                 break;
             case 'L':
-                for (let j=0; j<value; j++){
-                    cursorX = cursorX -1;
-                    coordinateArray.push(cursorX + ';' + cursorY); 
-                }
+                cursorX = cursorX - value;
                 break;
-            case 'U': 
-                 for (let j=0; j<value; j++){
-                    cursorY = cursorY+1;
-                    coordinateArray.push(cursorX + ';' + cursorY); 
-                }
+            case 'U':
+                cursorY = cursorY + value;
                 break;
             case 'D':
-                 for (let j=0; j<value; j++){
-                    cursorY = cursorY-1;
-                    coordinateArray.push(cursorX + ';' + cursorY); 
-                }
-                 break;
-         }
-     }
-     return coordinateArray;
-};
-
-function compare(c1, c2){
-    const crosspoints=[];
-    c1.forEach((e1)=>c2.forEach((e2)=>{
-       if(e1 === e2){
-           crosspoints.push(e1);
-       }
-   }
- ));
- return crosspoints;
-}
-
-function calculateSmallesDistance(crosspoints){
-    let smallest;
-    for(let i= 0; i<crosspoints.length; i++){
-        let coordinates = crosspoints[i];
-        let coordinateArray = coordinates.split(';').map(Number);
-        if(coordinateArray[0] < 0){
-            coordinateArray[0] = coordinateArray[0]*-1;
+                cursorY = cursorY - value;
+                break;
         }
-        if(coordinateArray[1] < 0){
-            coordinateArray[1] = coordinateArray[1]*-1;
-        }
-        distance = coordinateArray[0] + coordinateArray[1];
-        if(!smallest || distance < smallest){
-            smallest = distance;
-        };
+        ;
+        line.end.x = cursorX;
+        line.end.y = cursorY;
+        lines.push(line);
     }
-    console.log(smallest);
+    return lines;
+}
+;
+
+function compare(c1, c2) {
+    const crosspoints = [];
+    c1.forEach((e1) => c2.forEach((e2) => {
+        let intersect = linesegments.doIntersect(e1.start, e1.end, e2.start, e2.end);
+        if (intersect === true) {
+            let intersectionPoint = linesegments.calculateIntersection(e1, e2);
+            if (intersectionPoint !== undefined && intersectionPoint.x !== 0 && intersectionPoint.y !==0) {
+              crosspoints.push(intersectionPoint);
+            } ;
+         };
+     }));
+    return crosspoints;
+}
+;
+
+function calculateSmallesDistance(crosspoints) {
+    let smallest=0;
+    for (let i = 0; i < crosspoints.length; i++) {
+        let crossPoint = crosspoints[i];
+        if (crossPoint.x < 0) {
+            crossPoint.x = crossPoint.x * -1;
+        }
+        if (crossPoint.y < 0) {
+            crossPoint.y = crossPoint.y * -1;
+        }
+        distance = crossPoint.x + crossPoint.y;
+        if (!smallest || distance < smallest) {
+            smallest = distance;
+        }
+        ;
+    }
+    console.log('smallest: ' + smallest);
     return smallest;
-};
+}
+;
 
 
 

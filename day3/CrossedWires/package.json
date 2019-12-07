@@ -10,7 +10,8 @@
     ],
     "author": "ldikmans",
     "contributors": [],
-    "dependencies": {},
+    "dependencies": {
+     },
     "scripts": {
         "test": "mocha"
     },

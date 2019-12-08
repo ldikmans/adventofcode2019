@@ -1,0 +1,19 @@
+{
+    "name": "SecureContainer",
+    "keywords": [
+        "util",
+        "functional",
+        "server",
+        "client",
+        "browser"
+    ],
+    "author": "ldikmans",
+    "contributors": [],
+    "dependencies": {},
+    "scripts": {
+        "test": "mocha"
+    },
+    "devDependencies": {
+        "mocha": "^6.2.2"
+    }
+}
